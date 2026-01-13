@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bus Driver Tracker</title>
+</head>
+<body>
+  <h2>Driver Location Sender</h2>
+  <p>Status: Sending location...</p>
+
+  <!-- Firebase COMPAT SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!--dont give script type="module" and import{initializeApp}-->
+  <!--copy paste the below part from firebase-project settings-CDN-->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAyH0z9oScufG5CnJ8izMvaO0aur0l_ANg",
+      authDomain: "campusbustracker-a1f10.firebaseapp.com",
+      databaseURL: "https://campusbustracker-a1f10-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "campusbustracker-a1f10",
+      storageBucket: "campusbustracker-a1f10.firebasestorage.app",
+      messagingSenderId: "698456556354",
+      appId: "1:698456556354:web:9b10635f53cb4c111d7edb"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    console.log("Firebase connected");
+
+    // Send fake location every 3 seconds;this same value will be sent again and again
+    /*setInterval(() => {
+      const fakeLat = 9.9312;
+      const fakeLng = 76.2673;
+
+      database.ref("buses/bus1").set({
+        driver_name:"Arun",
+        lat: fakeLat,
+        lng: fakeLng,
+        speed: 30
+      });
+
+      console.log("Fake location sent");
+    }, 3000);*/
+    //the above code was just for testing purpose
+
+    //Now we will send real location using Geolocation API
+
+    //navigator → the browser ,geolocation → browser’s location service,watchPosition() → keep watching the device’s location,It runs again and again whenever location changes
+    navigator.geolocation.watchPosition(
+  (position) => {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+
+    database.ref("buses/bus1").set({
+      driver_name: "Arun",
+      lat: lat,
+      lng: lng,
+      speed: 30
+    });
+
+    console.log("Live location sent:", lat, lng);
+  },
+  (error) => {
+    console.error("GPS error:", error.message);
+  },
+  {
+    enableHighAccuracy: true,
+    maximumAge: 0,
+    timeout: 5000
+  }
+);
+//enableHighAccuracy: true->Uses GPS hardware,More accurate
+//maximumAge: 0->No cached locations,Always fetch fresh location
+//timeout: 5000->Wait for max 5 seconds,If not found → error
+  </script>
+</body>
+</html>
