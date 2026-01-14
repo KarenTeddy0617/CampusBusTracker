@@ -1,0 +1,71 @@
+<!--reading data from firebase-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bus ETA Test</title>
+</head>
+<body>
+  <h2>Bus ETA Test Page</h2>
+
+  
+  <!-- Firebase COMPAT SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!--dont give script type="module" and import{initializeApp}-->
+  <!--copy paste the below part from firebase-project settings-CDN-->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAyH0z9oScufG5CnJ8izMvaO0aur0l_ANg",
+      authDomain: "campusbustracker-a1f10.firebaseapp.com",
+      databaseURL: "https://campusbustracker-a1f10-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "campusbustracker-a1f10",
+      storageBucket: "campusbustracker-a1f10.firebasestorage.app",
+      messagingSenderId: "698456556354",
+      appId: "1:698456556354:web:9b10635f53cb4c111d7edb"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    console.log("Firebase connected");
+
+   // 🔹 4. Reference bus location in Firebase
+    const busRef = database.ref("buses/bus1");
+
+    // 🔹 5. Fixed bus stop location (example)
+    const stopLat = 12.9345;
+    const stopLng = 77.6100;
+
+    // 🔹 6. Average speed (km/h) — demo value
+    const avgSpeed = 30;
+
+    // 🔹 7. Listen for live bus updates
+    busRef.on("value",(snapshot) => {
+      const data = snapshot.val();
+
+      if (!data) {
+        console.log("⚠️ No bus data found");
+        return;
+      }
+
+      const busLat = data.lat;
+      const busLng = data.lng;
+        console.log("📍 Bus Location:", busLat, busLng);
+
+      // 🔹 8. Distance calculation (simple demo formula)
+      const distance = Math.sqrt(
+        (busLat - stopLat) ** 2 +
+        (busLng - stopLng) ** 2
+      );
+
+      // 🔹 9. ETA calculation (minutes)
+      const eta = (distance / avgSpeed) * 60;
+
+      console.log(" Distance:", distance.toFixed(6));
+      console.log(" ETA:", eta.toFixed(2), "minutes");
+      console.log("-----------------------------");
+});
+  </script>
+</body>
+</html>
