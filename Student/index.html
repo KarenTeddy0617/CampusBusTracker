@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>Campus Bus Live Tracker</title>
     <link rel="stylesheet" href="styles.css">
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
 </head>
 
 <body>
@@ -11,6 +16,20 @@
 <h2>🚌 Campus Bus Live Tracker</h2>
 
 <div id="map"></div>
+
+<div id="stops">
+    <label for="stopSelect">Select Stop:</label>
+
+    <select id="stopSelect">
+        <option value="">-- Choose a Stop --</option>
+        <option value="main_gate">Main Gate</option>
+        <option value="hostel">Hostel</option>
+        <option value="library">Library</option>
+        <option value="canteen">Canteen</option>
+        <option value="admin_block">Admin Block</option>
+    </select>
+</div>
+
 
 <div id="info-panel">
     <div class="card">
@@ -38,8 +57,9 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<!-- Google Maps API -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+<!--Leaflet.js-->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 
 <!-- App Logic -->
 <script src="app.js"></script>
