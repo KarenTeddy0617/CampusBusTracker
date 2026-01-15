@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Bus Live Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<h2>🚌 Campus Bus Live Tracker</h2>
+
+<div id="map"></div>
+
+<div id="info-panel">
+    <div class="card">
+        <h4>Bus Number</h4>
+        <p id="busNo">BUS-01</p>
+    </div>
+
+    <div class="card">
+        <h4>Speed</h4>
+        <p><span id="speed">--</span> km/h</p>
+    </div>
+
+    <div class="card">
+        <h4>Distance</h4>
+        <p><span id="distance">--</span> km</p>
+    </div>
+
+    <div class="card">
+        <h4>ETA</h4>
+        <p><span id="eta">--</span> min</p>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+
+<!-- App Logic -->
+<script src="app.js"></script>
+
+</body>
+</html>

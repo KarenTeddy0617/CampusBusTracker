@@ -32,8 +32,18 @@
 
    // 🔹 4. Reference bus location in Firebase
     const busRef = database.ref("buses/bus1");
+    /* This points to:
+      buses: {
+        bus1: {
+          driver_name: <name>,
+          lat: <latitude>,
+          lng: <longitude>
+          speed: <speed>
+        }
+      }
+    */
 
-    // 🔹 5. Fixed bus stop location (example)
+    // 🔹 5. Fixed bus stop location (example) doesnt change
     const stopLat = 12.9345;
     const stopLng = 77.6100;
 
@@ -41,8 +51,18 @@
     const avgSpeed = 30;
 
     // 🔹 7. Listen for live bus updates
+    //"value" → listens for any change,runs automatically
     busRef.on("value",(snapshot) => {
       const data = snapshot.val();
+      //reads current data at buses
+      /* Example data:
+        {
+          driver_name: "John Doe",
+          lat: 12.9350,
+          lng: 77.6095,
+          speed: 28
+        }
+      */
 
       if (!data) {
         console.log("⚠️ No bus data found");
@@ -51,7 +71,7 @@
 
       const busLat = data.lat;
       const busLng = data.lng;
-        console.log("📍 Bus Location:", busLat, busLng);
+      console.log("📍 Bus Location:", busLat, busLng);
 
       // 🔹 8. Distance calculation (simple demo formula)
       const distance = Math.sqrt(

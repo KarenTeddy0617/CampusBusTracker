@@ -1,0 +1,65 @@
+/* Reset default browser styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Page background */
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a73e8, #34a853);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    text-align: center;
+}
+
+/* Card-style container effect */
+h2 {
+    background: #ffffff;
+    color: #1a73e8;
+    padding: 16px 28px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Status text */
+p {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* Optional: subtle animation to show live tracking */
+p::after {
+    content: " ●";
+    color: #00ff99;
+    animation: blink 1.2s infinite;
+}
+
+/* Blinking dot animation */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.3rem;
+        padding: 14px 20px;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+}
