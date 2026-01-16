@@ -5,12 +5,37 @@
   <link rel="stylesheet" href="driver.css">
 </head>
 <body>
+  <div id="loginBox">
+  <h3>Driver Login</h3>
+  <input type="password" id="driverPass" placeholder="Enter password">
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="driverPanel" style="display:none;">
+
   <h2>Driver Location Sender</h2>
-  <p>Status: Sending location...</p>
+  <button onclick="startBus()">🟢 Start Bus</button>
+    <button onclick="stopBus()">🔴 Stop Bus</button>
+
+    <p id="statusText">Bus inactive</p>
+  </div>
+   <script>
+  function login() {
+    const pass = document.getElementById("driverPass").value;
+    if (pass === "driver123") {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("driverPanel").style.display = "block";
+    } else {
+      alert("Wrong password");
+    }
+  }
+</script>
+
 
   <!-- Firebase COMPAT SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <!--dont give script type="module" and import{initializeApp}-->
   <!--copy paste the below part from firebase-project settings-CDN-->
   <script>
@@ -49,20 +74,41 @@
     //Now we will send real location using Geolocation API
 
     //navigator → the browser ,geolocation → browser’s location service,watchPosition() → keep watching the device’s location,It runs again and again whenever location changes
+    let watchId = null;
+    function startBus() {
+  database.ref("busStatus").set("running");
+  document.getElementById("statusText").innerText = "🟢 Bus Running";
+  //startTracking();
+  if (watchId === null) {
+      startTracking();
+    }
+}
+
+function stopBus() {
+  database.ref("busStatus").set("stopped");
+  document.getElementById("statusText").innerText = "🔴 Bus Stopped";
+   if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+}
+//LOOK LATER
+/*function startTracking() {
     navigator.geolocation.watchPosition(
   (position) => {
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
+    const spd=position.coords.speed||0;
 
     database.ref("buses/bus1").set({
       driver_name: "Arun",
       lat: lat,
       lng: lng,
-      speed: 30
+      speed: spd
     });
 
     console.log("Live location sent:", lat, lng);
-  },
+},
   (error) => {
     console.error("GPS error:", error.message);
   },
@@ -72,9 +118,46 @@
     timeout: 5000
   }
 );
+}
+//watchPosition(success, error, options)
+
 //enableHighAccuracy: true->Uses GPS hardware,More accurate
 //maximumAge: 0->No cached locations,Always fetch fresh location
 //timeout: 5000->Wait for max 5 seconds,If not found → error
+*/
+function startTracking() {
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported");
+      return;
+    }
+
+    watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const spd = position.coords.speed || 0; // fallback speed
+
+        database.ref("buses/bus1").set({
+          driver_name: "Arun",
+          lat: lat,
+          lng: lng,
+          speed: spd
+        });
+
+        console.log("Live location sent:", lat, lng, spd);
+      },
+      (error) => {
+        console.error("GPS error:", error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000
+      }
+    );
+  }
+
   </script>
+</div>
 </body>
 </html>
