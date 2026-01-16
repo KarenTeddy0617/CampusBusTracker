@@ -1,0 +1,65 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* Page background */
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #f7f3ee, #f9d6cc);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Main heading */
+h1 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  color: #4f6f64; /* soft green */
+}
+
+/* Subtitle */
+p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+/* Buttons */
+button {
+  width: 220px;
+  padding: 14px 20px;
+  margin: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background-color: #f6c26b; /* warm yellow */
+  color: #333;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+button:hover {
+  background-color: #f28b82; /* coral */
+  color: white;
+  transform: translateY(-4px);
+}
+
+/* Mobile friendly */
+@media (max-width: 500px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  button {
+    width: 180px;
+  }
+}
