@@ -15,13 +15,13 @@ const db = firebase.database();
 console.log("Firebase connected");
 
 // 📍 Campus Center
-const campus = [9.93198, 76.34288];
+const campus = [10.06171, 76.34288];
 
 // 🎯 Destination Stop
 //const destinationStop = [9.93350, 76.34120];
 
 // 🗺️ Initialize Leaflet Map
-const map = L.map("map").setView(campus, 15);
+const map = L.map("map").setView(campus, 12);
 
 // 🌍 OpenStreetMap tiles
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -44,7 +44,7 @@ const stopIcon = L.icon({
 
 // 🚌 Bus Marker
 let busMarker = L.marker(campus, { icon: busIcon })
-    .addTo(map)
+    //.addTo(map)
     .bindPopup("Live Bus");
 let selectedStop = null;// Selected stop from dropdown
 let stopMarker = null; // GREEN marker
@@ -93,8 +93,18 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
+
+
+function resetBusUI() {
+    if (map.hasLayer(busMarker)) map.removeLayer(busMarker);
+    document.getElementById("speed").innerText = '--';
+    document.getElementById("distance").innerText = '--';
+    document.getElementById("eta").innerText = '--';
+}
+
 //Controls non-bus hours,No GPS movement when inactive
 let busRunning = false;
+
 
 db.ref("busStatus").on("value", snapshot => {
     const status = snapshot.val();
@@ -106,6 +116,7 @@ db.ref("busStatus").on("value", snapshot => {
         busRunning = false;
         document.getElementById("status").innerText =
             "🚫 Bus service not available now";
+        resetBusUI();
     }
 });
 document.getElementById("stopSelect").addEventListener("change", function () {
@@ -138,21 +149,55 @@ document.getElementById("stopSelect").addEventListener("change", function () {
     map.setView([selectedStop.lat, selectedStop.lng], 15);
 });
 
+
+
 // 🔴 Live Firebase Listener
 db.ref("buses/bus1").on("value", snapshot => {
-    if (!busRunning) return;
+    
     const data = snapshot.val();
-    if (!data||!data.lat||!data.lng) return;
+    // Remove marker if bus not running or data invalid
+    if (!busRunning || !data || !data.lat || !data.lng) {
+        
 
-    const lat = data.lat;
-    const lng = data.lng;
+        return;
+        
+    }
+
+    let lat = Number(data.lat);
+    let lng = Number(data.lng);
+
+    
+   // map.panTo([lat, lng]);
+    if (!map.hasLayer(busMarker)) {
+    busMarker.addTo(map);
+    }
 
     // Move marker
     busMarker.setLatLng([lat, lng]);
-   // map.panTo([lat, lng]);
 
-    // Update speed
-    document.getElementById("speed").innerText = data.speed ?? 0;
+
+
+    const FIXED_SPEED = 30;
+    // Only calculate distance/ETA if a stop is selected
+    if (selectedStop) {
+        const distance = calculateDistance(
+            lat,
+            lng,
+            selectedStop.lat,
+            selectedStop.lng
+        );
+
+       
+        const eta = FIXED_SPEED > 0 ? (distance / FIXED_SPEED) * 60 : '--';
+
+        document.getElementById("distance").innerText = distance.toFixed(2);
+        document.getElementById("eta").innerText = eta === '--' ? '--' : eta.toFixed(1);
+    } else {
+        document.getElementById("distance").innerText = '--';
+        document.getElementById("eta").innerText = '--';
+    }
+    document.getElementById("speed").innerText = FIXED_SPEED;
+
 
     /* Distance + ETA
     const distance = calculateDistance(
@@ -170,11 +215,11 @@ db.ref("buses/bus1").on("value", snapshot => {
 });*/
 
 // ❗ ONLY calculate distance/ETA if stop selected
-    if (!selectedStop) {
+    /*if (!selectedStop) {
         document.getElementById("distance").innerText = "--";
         document.getElementById("eta").innerText = "--";
         return;
-    }
+    }*/
 
    /* const distance = calculateDistance(
         lat,
@@ -190,22 +235,6 @@ db.ref("buses/bus1").on("value", snapshot => {
     document.getElementById("distance").innerText = distance.toFixed(2);
     document.getElementById("eta").innerText = eta.toFixed(1);
 }); */
-if (selectedStop) { // check if stop is selected
-    const distance = calculateDistance(
-        lat,
-        lng,
-        selectedStop.lat,
-        selectedStop.lng
-    );
 
-    const speed = data.speed || 20;
-    const eta = speed > 0 ? (distance / speed) * 60 : '--';
-
-    document.getElementById("distance").innerText = distance.toFixed(2);
-    document.getElementById("eta").innerText = eta === '--' ? '--' : eta.toFixed(1);
-} else {
-    document.getElementById("distance").innerText = '--';
-    document.getElementById("eta").innerText = '--';
-}
 
 });
