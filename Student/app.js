@@ -176,6 +176,21 @@ db.ref("buses/bus1").on("value", snapshot => {
         return;
     }
 
+   /* const distance = calculateDistance(
+        lat,
+        lng,
+        selectedStop.lat,
+        selectedStop.lng
+    );
+    console.log
+
+    const speed = data.speed && data.speed > 0 ? data.speed : 20;
+    const eta = (distance / speed) * 60;
+
+    document.getElementById("distance").innerText = distance.toFixed(2);
+    document.getElementById("eta").innerText = eta.toFixed(1);
+}); */
+if (selectedStop) { // check if stop is selected
     const distance = calculateDistance(
         lat,
         lng,
@@ -183,9 +198,14 @@ db.ref("buses/bus1").on("value", snapshot => {
         selectedStop.lng
     );
 
-    const speed = data.speed && data.speed > 0 ? data.speed : 20;
-    const eta = (distance / speed) * 60;
+    const speed = data.speed || 20;
+    const eta = speed > 0 ? (distance / speed) * 60 : '--';
 
     document.getElementById("distance").innerText = distance.toFixed(2);
-    document.getElementById("eta").innerText = eta.toFixed(1);
+    document.getElementById("eta").innerText = eta === '--' ? '--' : eta.toFixed(1);
+} else {
+    document.getElementById("distance").innerText = '--';
+    document.getElementById("eta").innerText = '--';
+}
+
 });
